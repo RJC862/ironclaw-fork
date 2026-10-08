@@ -76,6 +76,7 @@ func cmdScan(args []string) error {
 	podmanBin := fs.String("podman-bin", envOrDefault("PODMAN", "podman"), "podman binary used for `podman container inspect` and `podman image inspect`")
 	nerdctlBin := fs.String("nerdctl-bin", envOrDefault("NERDCTL", "nerdctl"), "nerdctl binary used for `nerdctl container inspect` and `nerdctl image inspect`")
 	minScore := fs.Int("min-score", 0, "exit non-zero if the score is below this threshold (CI gate)")
+	minGrade := fs.String("min-letter", "F", "exit non-zero if the score is below this threshold (CI gate)")
 	listDims := fs.Bool("list-dimensions", false, "print the containment scoring dimensions and their weights, then exit")
 	fs.Usage = func() { scanUsage(os.Stdout) }
 	// Go's flag package stops at the first positional, so `scan <target> --json`

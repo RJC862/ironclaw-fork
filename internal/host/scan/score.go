@@ -86,6 +86,21 @@ var scorers = []scorer{
 	{"namespaces.host", "No shared host namespaces", 10, gradeHostNS},
 }
 
+// band defines the grade bands used for the scorer
+type Band struct {
+	letter    string
+	threshold int
+}
+
+// gradeBands maps a letter grade to a numerical threshold, and vice versa
+var gradeBands = []Band{
+	{letter: "A", threshold: 90},
+	{letter: "B", threshold: 75},
+	{letter: "C", threshold: 50},
+	{letter: "D", threshold: 25},
+	{letter: "F", threshold: 0},
+}
+
 // TotalWeight is the maximum achievable score (100 by construction).
 const TotalWeight = 100
 
@@ -250,18 +265,24 @@ func StrongIsolationRuntime(runtime string) (string, bool) {
 
 // grade maps a 0..100 score to a letter band.
 func grade(score int) string {
-	switch {
-	case score >= 90:
-		return "A"
-	case score >= 75:
-		return "B"
-	case score >= 50:
-		return "C"
-	case score >= 25:
-		return "D"
-	default:
-		return "F"
+	for _, band := range gradeBands {
+		if score >= band.threshold {
+			return band.letter
+		}
 	}
+
+	return "F"
+}
+
+// letterToScore maps a letter band to a 0..100 score
+func letterToScore(letter string) (int, bool) {
+	for _, band := range gradeBands {
+		if letter == band.letter {
+			return band.threshold, true
+		}
+	}
+
+	return 0, false
 }
 
 // --------------------------------------------------------------------------- //
