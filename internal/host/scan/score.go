@@ -275,7 +275,11 @@ func grade(score int) string {
 }
 
 // letterToScore maps a letter band to a 0..100 score
-func letterToScore(letter string) (int, bool) {
+func LetterToScore(letter string) (int, bool) {
+
+	// case insensitive letter checking
+	letter = strings.ToLower(letter)
+
 	for _, band := range gradeBands {
 		if letter == band.letter {
 			return band.threshold, true

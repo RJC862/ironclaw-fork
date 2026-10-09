@@ -138,6 +138,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -158,6 +159,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -178,6 +180,7 @@ func cmdScan(args []string) error {
 			badgeJSON:    *badgeJSON,
 			sarif:        *sarif,
 			minScore:     *minScore,
+			minGrade:     *minGrade,
 		})
 	}
 
@@ -198,6 +201,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -217,6 +221,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -237,6 +242,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -257,6 +263,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -279,6 +286,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -300,6 +308,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -322,6 +331,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -346,6 +356,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -369,6 +380,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -391,6 +403,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -414,6 +427,7 @@ func cmdScan(args []string) error {
 			badgeJSON:    *badgeJSON,
 			sarif:        *sarif,
 			minScore:     *minScore,
+			minGrade:     *minGrade,
 		})
 	}
 
@@ -437,6 +451,7 @@ func cmdScan(args []string) error {
 			badgeJSON: *badgeJSON,
 			sarif:     *sarif,
 			minScore:  *minScore,
+			minGrade:  *minGrade,
 		})
 	}
 
@@ -458,6 +473,7 @@ func cmdScan(args []string) error {
 			badgeJSON:    *badgeJSON,
 			sarif:        *sarif,
 			minScore:     *minScore,
+			minGrade:     *minGrade,
 		})
 	}
 
@@ -611,6 +627,14 @@ func cmdScan(args []string) error {
 	if *minScore > 0 && report.Score < *minScore {
 		return fmt.Errorf("containment score %d/100 is below the required %d", report.Score, *minScore)
 	}
+
+	score, letterValid := scan.LetterToScore(*minGrade)
+
+	if !letterValid {
+		return fmt.Errorf("Minimum grade '%s' is not an accepted letter grade", *minGrade)
+	}
+
+	//TODO: fail-closed below requested threshold
 	return nil
 }
 
@@ -681,6 +705,7 @@ type dockerfileArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runDockerfileScan grades each Dockerfile's authoring-time posture statically
@@ -769,6 +794,7 @@ type helmArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runHelmScan renders a Helm chart with `helm template` (no cluster, daemon-free)
@@ -884,6 +910,7 @@ type kustomizeArgs struct {
 	badgeJSON    string
 	sarif        string
 	minScore     int
+	minGrade     string
 }
 
 // runKustomizeScan renders a kustomization directory with `kustomize build`
@@ -1009,6 +1036,7 @@ type terraformArgs struct {
 	badgeJSON    string
 	sarif        string
 	minScore     int
+	minGrade     string
 }
 
 // runTerraformScan grades the container workloads declared in a `terraform show
@@ -1153,6 +1181,7 @@ type nomadArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runNomadScan grades the docker-driver tasks declared in a HashiCorp Nomad job
@@ -1271,6 +1300,7 @@ type ecsArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runECSScan grades an AWS ECS task definition's container contract, reusing the
@@ -1396,6 +1426,7 @@ type cloudRunScanArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runCloudRunScan grades the Google Cloud Run services declared in a Knative
@@ -1524,6 +1555,7 @@ type openShiftScanArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runOpenShiftScan grades the OpenShift workloads declared in a manifest set (a
@@ -1652,6 +1684,7 @@ type cloudFormationScanArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runCloudFormationScan grades the AWS::ECS::TaskDefinition resources declared in a
@@ -1784,6 +1817,7 @@ type samScanArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runSAMScan grades the AWS::ECS::TaskDefinition resources declared in an AWS SAM
@@ -1928,6 +1962,7 @@ type pulumiScanArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runPulumiScan grades the container workloads declared in Pulumi program output
@@ -2054,6 +2089,7 @@ type azureScanArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runAzureScan grades the Microsoft.ContainerInstance/containerGroups declared in an
@@ -2186,6 +2222,7 @@ type appRunnerScanArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // bicepScanArgs carries the resolved inputs for a `scan --bicep` run.
@@ -2200,6 +2237,7 @@ type bicepScanArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runAppRunnerScan grades an AWS App Runner service, reusing the SAME pod-spec scorer
@@ -2473,6 +2511,7 @@ type cdkScanArgs struct {
 	badgeJSON string
 	sarif     string
 	minScore  int
+	minGrade  string
 }
 
 // runCDKScan grades an AWS CDK app by way of the CloudFormation template its
@@ -2856,6 +2895,7 @@ type k8sAdmissionArgs struct {
 	badgeJSON    string
 	sarif        string
 	minScore     int
+	minGrade     string
 }
 
 // runK8sAdmissionScan grades the workload carried in a Kubernetes AdmissionReview
